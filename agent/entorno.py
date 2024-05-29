@@ -17,12 +17,12 @@ class Arbol:
 class Entorno:
   def __init__(self):
     self.arboles = [
-      Arbol(5), Arbol(3), Arbol(7)
+      Arbol(3), Arbol(2), Arbol(5)
     ]
     self.cant_arboles = len(self.arboles)
     self.cant_mangos = sum([arbol.mangos for arbol in self.arboles])
     self.caminos = nx.DiGraph()
-    self.caminos.add_nodes_from(list(range(1, self._arboles + 1)))
+    self.caminos.add_nodes_from(list(range(1, self.cant_arboles + 1)))
     self.caminos.add_weighted_edges_from([
       (1, 1, 7), (1, 2, 14), (2, 1, 8), 
       (1, 3, 4), (3, 1, 5), 
@@ -40,15 +40,16 @@ class Entorno:
     return [arbol.hay_mangos() for arbol in self.arboles]
   
   def cosechar(self, arbol):
-    self.arboles[arbol - 1].cosechar()
-    self.cant_mangos -= 1
+    if self.arboles[arbol - 1].hay_mangos():
+      self.arboles[arbol - 1].cosechar()
+      self.cant_mangos -= 1
+    else:
+      print("No hay mangos en el arbol")
+
+  def gastar_energia(self, arbol1, arbol2):
+    return self.caminos[arbol1][arbol2]['weight']
     
     
 if __name__ == '__main__':
   entorno = Entorno()
-  print(entorno.caminos)
-  print(nx.shortest_path(entorno.caminos, 1, 1, weight='weight'))
-  print(entorno.caminos.edges.data('weight'))
-  nx.draw(entorno.caminos, with_labels=True)
-  plt.show()
-  
+  print(entorno.gastar_energia(1, 2))
