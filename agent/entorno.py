@@ -51,3 +51,4 @@ if __name__ == '__main__':
   print(entorno.caminos.edges.data('weight'))
   nx.draw(entorno.caminos, with_labels=True)
   plt.show()
+  
