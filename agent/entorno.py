@@ -25,10 +25,10 @@ class Entorno:
     self.caminos = nx.DiGraph()
     self.caminos.add_nodes_from(list(range(1, self.cant_arboles + 1)))
     self.caminos.add_weighted_edges_from([
-      (1, 1, 7), (1, 2, 14), (2, 1, 8), 
-      (1, 3, 4), (3, 1, 5), 
-      (2, 2, 9), (2, 3, 1), (3, 2, 11),
-      (3, 3, 6)
+      (1, 1, 2), (1, 2, 3), (2, 1, 1), 
+      (1, 3, 4), (3, 1, 4), 
+      (2, 2, 2), (2, 3, 1), (3, 2, 5),
+      (3, 3, 1)
     ])
     
   def hay_mangos(self):
@@ -59,5 +59,27 @@ if __name__ == '__main__':
 
   while (pepe.estado_actual != "s1" and pepe.energia > 0):
     
-    print(f'Iteración {iteracion}, percepción: {entorno}')
     iteracion += 1
+    print(f'Iteración {iteracion}')
+    print(f'Energía actual: {pepe.energia}')
+    print(f'Mangos restantes: {entorno.total_mangos()}')
+    print(f'Arbol actual: {pepe.arbol_actual}')
+    
+    percepcion, estado = pepe.convertir_estado_arboles(entorno.estado_arboles())
+    print(f'percepción: {percepcion}')
+    print(f'Estado actual: {estado}')
+    
+    pepe.llenar_estado_Interno(percepcion, estado)
+    accion, estado_esperado = pepe.seleccionar_accion_estado(estado)
+    print(f'Accion seleccionada: {accion}')
+    entorno.cosechar(pepe.acciones[accion][1])
+    pepe.ejecutar_accion(accion, entorno.gastar_energia(*pepe.acciones[accion]))
+    pepe.llenar_historial(estado, accion, estado_esperado)
+    
+    print(f'Estado interno: {pepe.estado_interno}')
+    print(f'Historial: {pepe.historial}')
+    print(f'Energía restante: {pepe.energia}')
+    print('---------------------------------')
+    
+    
+    

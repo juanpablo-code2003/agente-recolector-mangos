@@ -1,3 +1,6 @@
+import random
+
+
 class Agente:
   sensors = None
   actuators = None
@@ -36,9 +39,19 @@ class Agente:
       "s7": "Mangos en arboles 1 y 2",
       "s8": "Mangos en arboles 1, 2 y 3"
     }
+    
+    self.relaciones = {
+      "p1": "s1",
+      "p2": "s2",
+      "p3": "s3",
+      "p4": "s4",
+      "p5": "s5",
+      "p6": "s6",
+      "p7": "s7",
+      "p8": "s8"
+    }
 
     # Acciones
-
     self.acciones = {
       "a1": (1, 1),
       "a2": (2, 2),
@@ -88,8 +101,16 @@ class Agente:
     self.historial.append((estado_actual, accion, estado_esperado))
 
   def convertir_estado_arboles(self, estado_arboles):
-   
     estado_arboles = [int(i) for i in estado_arboles]
     for p, v in self.percepciones.items():
       if v[0] == estado_arboles:
-        return p
+        return p, self.relaciones[p]
+      
+  def seleccionar_accion_estado(self, estado):
+    acciones = self.we[estado]
+    return random.choice(acciones)
+  
+  def ejecutar_accion(self, accion, energia_consumida):
+    self.energia -= energia_consumida
+    self.arbol_actual = self.acciones[accion][1]
+    return self.arbol_actual
