@@ -8,9 +8,8 @@ class Agente:
     self.objetivo = "s8"
     self.historial = []
     self.estado_interno = []
-
     self.arbol_actual = None
-
+    self.estado_actual = "s8"
 
     # Percepciones
     self.percepciones = {
@@ -80,3 +79,17 @@ class Agente:
             ('a2', 's6'), ('a4', 's6'), ('a9', 's6'), ('a3', 's7'), ('a6', 's7'), ('a8', 's7')]
     }
 
+  
+  def llenar_estado_Interno(self, percepcion, estado):
+    self.estado_interno.append((percepcion, estado))
+    self.estado_actual = estado
+
+  def llenar_historial(self, estado_actual, accion ,estado_esperado):
+    self.historial.append((estado_actual, accion, estado_esperado))
+
+  def convertir_estado_arboles(self, estado_arboles):
+   
+    estado_arboles = [int(i) for i in estado_arboles]
+    for p, v in self.percepciones.items():
+      if v[0] == estado_arboles:
+        return p

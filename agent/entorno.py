@@ -1,5 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+from agente import Agente
 
 class Arbol:
   def __init__(self, mangos):
@@ -52,4 +53,11 @@ class Entorno:
     
 if __name__ == '__main__':
   entorno = Entorno()
+  pepe = Agente()
   print(entorno.gastar_energia(1, 2))
+  iteracion = 0
+
+  while (pepe.estado_actual != "s1" and pepe.energia > 0):
+    
+    print(f'Iteración {iteracion}, percepción: {entorno}')
+    iteracion += 1
