@@ -51,35 +51,41 @@ class Entorno:
     return self.caminos[arbol1][arbol2]['weight']
     
     
-if __name__ == '__main__':
-  entorno = Entorno()
-  pepe = Agente()
-  print(entorno.gastar_energia(1, 2))
-  iteracion = 0
+  def run():
+    arbol_actual_lista = []
 
-  while (pepe.estado_actual != "s1" and pepe.energia > 0):
-    
-    iteracion += 1
-    print(f'Iteración {iteracion}')
-    print(f'Energía actual: {pepe.energia}')
-    print(f'Mangos restantes: {entorno.total_mangos()}')
-    print(f'Arbol actual: {pepe.arbol_actual}')
-    
-    percepcion, estado = pepe.convertir_estado_arboles(entorno.estado_arboles())
-    print(f'percepción: {percepcion}')
-    print(f'Estado actual: {estado}')
-    
-    pepe.llenar_estado_Interno(percepcion, estado)
-    accion, estado_esperado = pepe.seleccionar_accion_estado(estado)
-    print(f'Accion seleccionada: {accion}')
-    entorno.cosechar(pepe.acciones[accion][1])
-    pepe.ejecutar_accion(accion, entorno.gastar_energia(*pepe.acciones[accion]))
-    pepe.llenar_historial(estado, accion, estado_esperado)
-    
-    print(f'Estado interno: {pepe.estado_interno}')
-    print(f'Historial: {pepe.historial}')
-    print(f'Energía restante: {pepe.energia}')
-    print('---------------------------------')
-    
-    
-    
+
+    entorno = Entorno()
+    pepe = Agente()
+    print(entorno.gastar_energia(1, 2))
+    iteracion = 0
+
+    while (pepe.estado_actual != "s1" and pepe.energia > 0 and entorno.hay_mangos()):
+      
+      iteracion += 1
+      print(f'Iteración {iteracion}')
+      print(f'Energía actual: {pepe.energia}')
+      print(f'Mangos restantes: {entorno.total_mangos()}')
+      print(f'Arbol actual: {pepe.arbol_actual}')
+      arbol_actual_lista.append(pepe.arbol_actual)
+      
+      percepcion, estado = pepe.convertir_estado_arboles(entorno.estado_arboles())
+      print(f'percepción: {percepcion}')
+      print(f'Estado actual: {estado}')
+      
+      pepe.llenar_estado_Interno(percepcion, estado)
+      accion, estado_esperado = pepe.seleccionar_accion_estado(estado)
+      print(f'Accion seleccionada: {accion}')
+      entorno.cosechar(pepe.acciones[accion][1])
+      pepe.ejecutar_accion(accion, entorno.gastar_energia(*pepe.acciones[accion]))
+      pepe.llenar_historial(estado, accion, estado_esperado)
+      
+      print(f'Estado interno: {pepe.estado_interno}')
+      print(f'Historial: {pepe.historial}')
+      print(f'Energía restante: {pepe.energia}')
+      print('---------------------------------')
+
+      return arbol_actual_lista
+      
+      
+      
