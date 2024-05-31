@@ -53,9 +53,10 @@ class Entorno:
     
 if __name__ == '__main__':
   entorno = Entorno()
-  pepe = Agente()
+  pepe = Agente(entorno)
   print(entorno.gastar_energia(1, 2))
   iteracion = 0
+  estado_esperado = "s1"
 
   while (pepe.estado_actual != "s1" and pepe.energia > 0):
     
@@ -70,7 +71,7 @@ if __name__ == '__main__':
     print(f'Estado actual: {estado}')
     
     pepe.llenar_estado_Interno(percepcion, estado)
-    accion, estado_esperado = pepe.seleccionar_accion_estado(estado)
+    accion, estado_esperado = pepe.seleccionar_accion_estado(estado, estado_esperado)
     print(f'Accion seleccionada: {accion}')
     entorno.cosechar(pepe.acciones[accion][1])
     pepe.ejecutar_accion(accion, entorno.gastar_energia(*pepe.acciones[accion]))
@@ -80,6 +81,7 @@ if __name__ == '__main__':
     print(f'Historial: {pepe.historial}')
     print(f'Energía restante: {pepe.energia}')
     print('---------------------------------')
+  
     
     
     

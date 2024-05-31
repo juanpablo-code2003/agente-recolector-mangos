@@ -158,11 +158,11 @@ def generador_de_grafo():
     # Repetir el proceso de reemplazar los nodos sin sucesores 3 veces
     contador = 1
 
-    for i in range(2):
+    for i in range(5):
         print(f'\n\nITERACION {i} \n\n')
         general, contador = reemplazar_nodos_sin_sucesores(general, [s2, s3, s4, s5 ,s6, s7, s8], contador)
 
     return general
 
-generador_de_grafo()
+# generador_de_grafo()
 
