@@ -51,6 +51,7 @@ class Entorno:
     return self.caminos[arbol1][arbol2]['weight']
     
     
+<<<<<<< HEAD
   def run():
     arbol_actual_lista = []
 
@@ -89,3 +90,39 @@ class Entorno:
       
       
       
+=======
+if __name__ == '__main__':
+  entorno = Entorno()
+  pepe = Agente(entorno)
+  print(entorno.gastar_energia(1, 2))
+  iteracion = 0
+  estado_esperado = "s1"
+
+  while (pepe.estado_actual != "s1" and pepe.energia > 0):
+    
+    iteracion += 1
+    print(f'Iteración {iteracion}')
+    print(f'Energía actual: {pepe.energia}')
+    print(f'Mangos restantes: {entorno.total_mangos()}')
+    print(f'Arbol actual: {pepe.arbol_actual}')
+    
+    percepcion, estado = pepe.convertir_estado_arboles(entorno.estado_arboles())
+    print(f'percepción: {percepcion}')
+    print(f'Estado actual: {estado}')
+    
+    pepe.llenar_estado_Interno(percepcion, estado)
+    accion, estado_esperado = pepe.seleccionar_accion_estado(estado, estado_esperado)
+    print(f'Accion seleccionada: {accion}')
+    entorno.cosechar(pepe.acciones[accion][1])
+    pepe.ejecutar_accion(accion, entorno.gastar_energia(*pepe.acciones[accion]))
+    pepe.llenar_historial(estado, accion, estado_esperado)
+    
+    print(f'Estado interno: {pepe.estado_interno}')
+    print(f'Historial: {pepe.historial}')
+    print(f'Energía restante: {pepe.energia}')
+    print('---------------------------------')
+  
+    
+    
+    
+>>>>>>> origin/juanpablo

@@ -1,18 +1,24 @@
 import random
+from statistics import mean
+import networkx as nx
+from grafo_we import generador_de_grafo
 
 
 class Agente:
   sensors = None
   actuators = None
   
-  def __init__(self):
+  def __init__(self, entorno):
     self.mangos = None 
     self.energia = 30
-    self.objetivo = "s8"
+    self.objetivo = "s1"
     self.historial = []
     self.estado_interno = []
-    self.arbol_actual = None
+    self.arbol_actual = 1
     self.estado_actual = "s8"
+    self.entorno = entorno
+    self.estrategia_planeada = []
+    self.iteraciones = 0
 
     # Percepciones
     self.percepciones = {
@@ -108,11 +114,65 @@ class Agente:
       if v[0] == estado_arboles:
         return p, self.relaciones[p]
       
-  def seleccionar_accion_estado(self, estado):
-    acciones = self.we[estado]
-    return random.choice(acciones)
+  def seleccionar_accion_estado(self, estado_real, estado_esperado):
+    if (estado_real != estado_esperado):
+      estrategia_creada = self.estrategia(estado_real)
+      for i in range(1, len(estrategia_creada)):
+        accion_elegida = random.choice(self.acciones_posibles())
+        for j in estrategia_creada[i][0]:
+          if j in self.acciones_posibles():
+            accion_elegida = j
+            break
+        estrategia_creada[i][0] = accion_elegida
+      if len(self.estrategia_planeada) > 0:
+        nueva_estrategia = estrategia_creada[1:]
+        if self.iteraciones == len(self.estrategia_planeada):
+          self.estrategia_planeada[-1] = [self.estrategia_planeada[-1][0], estrategia_creada[0][1]]
+          self.estrategia_planeada.extend(nueva_estrategia)
+        else:
+          estrategia_recorrida = self.estrategia_planeada[:self.iteraciones]
+          estrategia_recorrida[-1] = [self.estrategia_planeada[-1][0], estrategia_creada[0][1]]
+          self.estrategia_planeada = estrategia_recorrida
+          self.estrategia_planeada.extend(nueva_estrategia)
+      else:
+        self.estrategia_planeada = estrategia_creada
+        
+    print(self.estrategia_planeada[self.iteraciones])
+    return self.estrategia_planeada[self.iteraciones] if self.estrategia_planeada[self.iteraciones][0] is not None else [random.choice(self.acciones_posibles()), self.estrategia_planeada[self.iteraciones][1]]
+  
+  def acciones_posibles(self):
+    acciones = list()
+    for accion, arboles in self.acciones.items():
+      if arboles[0] == self.arbol_actual:
+        acciones.append(accion)
+        
+    return acciones
+  
+  def traduccion_weights(self, nodo1, nodo2, arista):
+    pesos = []
+    for accion in arista['weight']:
+      arboles = self.acciones[accion]
+      pesos.append(self.entorno.caminos[arboles[0]][arboles[1]]['weight'])
+    
+    return mean(pesos)
+  
+  def estrategia(self, estado):
+    if estado == "s1":
+      return []
+    else:
+      grafo = generador_de_grafo()
+      paths = nx.shortest_path(grafo, source=f'{estado}-0-{int(estado[1])-2}-0', weight=self.traduccion_weights)
+      paths_objetivo = [path for final, path in paths.items() if 's1' in final]
+      elegido = random.choice(paths_objetivo)
+      estrategia = [(None ,elegido[0][0:2])]
+      for i in range(len(elegido) - 1):
+        estrategia.append([grafo[elegido[i]][elegido[i+1]]['weight'], elegido[i+1][0:2]])
+        
+      return estrategia
+      
   
   def ejecutar_accion(self, accion, energia_consumida):
     self.energia -= energia_consumida
     self.arbol_actual = self.acciones[accion][1]
+    self.iteraciones += 1
     return self.arbol_actual
